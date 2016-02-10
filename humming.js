@@ -1,13 +1,13 @@
 /**
- * MyAnimeList search module
+ * HummingBird search module
  * returns the title description and some stats
  *
  * Written By: Paras D. Pain
  * Date Written: 10/02/2016
  */
 
-var request = require.safe('request');
 console.debug('line 10');
+var request = require.safe('request');
 
 /*
 * Paths
