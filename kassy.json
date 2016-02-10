@@ -1,0 +1,5 @@
+{
+  "name": "humming",
+  "version": 2.0,
+  "startup": "humming.js"
+}
