@@ -35,8 +35,6 @@ exports.help = function(commandPrefix) {
 	above returns true.
 */
 exports.run = function(api, event) {
-    // Check for command type
-    if(event.body.startsWith("humming ")){
         var query = event.body.substr(8);
         
         console.debug('line 40');
@@ -49,7 +47,6 @@ exports.run = function(api, event) {
                 console.debug(error);
             }
         });
-    }
 };
 
 function parse(query){
