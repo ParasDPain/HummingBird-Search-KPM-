@@ -12,10 +12,8 @@ var request = require.safe('request');
 /*
 * Paths
 */
-var config = {}
-
-config.HUMMINGBIRD_HOST = "hummingbird.me/api/v1";
-config.HUMMINGBIRD_SEARCH = "/search/anime/";
+var HUMMINGBIRD_HOST = "hummingbird.me/api/v1";
+var HUMMINGBIRD_SEARCH = "/search/anime/";
 
 exports.match = function(text, commandPrefix) {
     // The space makes sure the command is exact and not a mere prefix
@@ -62,8 +60,8 @@ function parse(query){
  * callback:    takes the error, and data
  */
 function search(query, callback) {
-    request.get("https://" + config.HUMMINGBIRD_HOST + 
-             config.HUMMINGBIRD_SEARCH + "?query=" + 
+    request.get("https://" + HUMMINGBIRD_HOST + 
+             HUMMINGBIRD_SEARCH + "?query=" + 
              query, function(err, res, body) {
         
         console.debug('line 73');
