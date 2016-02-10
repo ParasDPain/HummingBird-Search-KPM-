@@ -62,11 +62,15 @@ function parse(query){
  * callback:    takes the error, and data
  */
 function search(query, callback) {
-    request.get({
+    request.get("https://" + config.HUMMINGBIRD_HOST + 
+             config.HUMMINGBIRD_SEARCH + "?query=" + 
+             query
+    /*    {
         uri: "https://" + config.HUMMINGBIRD_HOST + 
              config.HUMMINGBIRD_SEARCH + "?query=" + 
              query // Fuzzy search supported by server
-    }, function(err, res, body) {
+    } */
+    , function(err, res, body) {
         
         console.debug('line 73');
         
