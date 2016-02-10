@@ -14,8 +14,8 @@ var request = require.safe('request');
 */
 var config = {}
 
-config.HUMMINGBIRD_HOST = "hummingbird.me/api/v1"
-config.HUMMINGBIRD_SEARCH = "/search/anime/"
+config.HUMMINGBIRD_HOST = "hummingbird.me/api/v1";
+config.HUMMINGBIRD_SEARCH = "/search/anime/";
 
 exports.match = function(text, commandPrefix) {
     // The space makes sure the command is exact and not a mere prefix
@@ -64,13 +64,7 @@ function parse(query){
 function search(query, callback) {
     request.get("https://" + config.HUMMINGBIRD_HOST + 
              config.HUMMINGBIRD_SEARCH + "?query=" + 
-             query
-    /*    {
-        uri: "https://" + config.HUMMINGBIRD_HOST + 
-             config.HUMMINGBIRD_SEARCH + "?query=" + 
-             query // Fuzzy search supported by server
-    } */
-    , function(err, res, body) {
+             query, function(err, res, body) {
         
         console.debug('line 73');
         
@@ -86,4 +80,4 @@ function search(query, callback) {
             callback(null, body);
         }
     });
-};
+}
