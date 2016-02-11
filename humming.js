@@ -18,7 +18,7 @@ var HUMMINGBIRD_SEARCH = "/search/anime/";
 exports.match = function(text, commandPrefix) {
     // The space makes sure the command is exact and not a mere prefix
     console.debug('line 23');
-    return text.startsWith(commandPrefix + 'humming ');
+    return text.startsWith(commandPrefix + 'humming');
 };
 
 /*
@@ -60,9 +60,13 @@ function parse(query){
  * callback:    takes the error, and data
  */
 function search(query, callback) {
-    request.get("https://" + HUMMINGBIRD_HOST + 
-             HUMMINGBIRD_SEARCH + "?query=" + 
-             query, function(err, res, body) {
+    request.get({
+        url: "https://" + HUMMINGBIRD_HOST + 
+             HUMMINGBIRD_SEARCH + "?query=" + query,
+        headers: {
+                 "Content-Type": "application/x-www-form-urlencoded"
+             }
+    }, function(err, res, body) {
         
         console.debug('line 73');
         
