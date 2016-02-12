@@ -82,7 +82,8 @@ exports.run = function(api, event) {
   ]
 }
 */
-function parse(response){
+function parse(res){
+    var response = JSON.parse(res);
     // Response is already an array of JSON/JS objects
     // Check for null objects in it
     if(response.length <= 0){
