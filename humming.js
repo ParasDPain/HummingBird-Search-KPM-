@@ -48,6 +48,7 @@ exports.run = function(api, event) {
         search(query, function(error, response){
             // Callback calls the parser if no errors were registered
             if(!error){
+                console.debug(parse(response));
                 api.sendMessage(parse(response), event.thread_id);
             } else{
                 console.debug(error);
@@ -91,7 +92,7 @@ function parse(res){
     }
     
     // Result limit set-up; Use the lowest of the two as the limit
-    var limit = RESULT_LIMIT < response.length? RESULT_LIMIT : response.length;
+    var limit = RESULT_LIMIT <= response.length? RESULT_LIMIT : response.length;
     var final = "Search Results";
     
     // Selective string creation from JSON attributes
@@ -115,9 +116,9 @@ function parse(res){
     final += new Number(response[i].community_rating * 2).toFixed(2);
 
     final += "\n\t Genres: ";
-    /* for(var j = 0; j < response[i].genres.length; j++){
-    	final += response[i].genres[j].name + "; ";
-    } */
+    for(var j in response[i].genres){
+    	final += j.name + "; ";
+    }
 
     final += "\n";
   }
