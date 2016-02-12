@@ -4,6 +4,9 @@
  *
  * Written By: Paras D. Pain
  * Date Written: 10/02/2016
+ * 
+ * Many thanks to Matthew Knox and Awarua- for the immense advice on my first JS project
+ * Many thanks to JSFiddle for making debugging a piece of cake :) Ooooh cake... > o >
  */
 
 var request = require.safe("request");
