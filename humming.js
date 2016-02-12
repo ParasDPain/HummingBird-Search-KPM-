@@ -6,23 +6,25 @@
  * Date Written: 10/02/2016
  */
 
-var request = require.safe('request');
+var request = require.safe("request");
 
 /*
 * Paths
 */
 var HUMMINGBIRD_HOST = "hummingbird.me/api/v1";
 var HUMMINGBIRD_SEARCH = "/search/anime/";
+var RESULT_LIMIT = 3;
 
 exports.match = function(text, commandPrefix) {
-    return text.startsWith(commandPrefix + 'humming');
+    return text.startsWith(commandPrefix + "humming " || commandPrefix + "humming /limit ");
 };
 
 /*
 	Method that provides help strings for use with this module.
 */
 exports.help = function(commandPrefix) {
-    return [[commandPrefix + 'humming <query>','Searches Anime or Manga when you are too lazy to make a few clicks']];
+    return [[commandPrefix + "humming <query>","Searches Anime or Manga when you are too lazy to make a few clicks"],
+            [commandPrefix +  "humming /limit <number of results> <query>", "Searches for the query and returns the desired number of results"]];
 };
 
 /*
@@ -30,7 +32,18 @@ exports.help = function(commandPrefix) {
 	above returns true.
 */
 exports.run = function(api, event) {
-        var query = event.body.substr(8);
+    var command = event.body,
+        commandPrefix = api.commandPrefix,
+        query;
+        
+    if(command.startsWith(commandPrefix + "humming ")){
+        query = event.body.substr(8);
+    } else{
+        // remove command keyword and assign values
+        command =  command.replace("humming /limit ", "");
+        RESULT_LIMIT = command.substr(0, command.indexOf(" ")); // substr length is exclusive
+        query = event.body.substr(command.indexOf(" ")); // start reading from where the whitespace occured
+    }
         
         search(query, function(error, response){
             // Callback calls the parser if no errors were registered
@@ -42,11 +55,69 @@ exports.run = function(api, event) {
         });
 };
 
-function parse(query){
-    // testing
-    console.debug(JSON.stringify(query, ['url', 'title', 'episode_count', 'synopsis', 'show_type', 'genres'], '\t'));
-    return JSON.stringify(query, ['url', 'title', 'episode_count', 'synopsis', 'show_type', 'genres'], '\t');
-    // return 'parser reached';
+/* Each JSON object in the returned will be of this form
+{
+  "id": 7622,
+  "mal_id": 17265,
+  "slug": "log-horizon",
+  "status": "Finished Airing",
+  "url": "https://hummingbird.me/anime/log-horizon",
+  "title": "Log Horizon",
+  "alternate_title": "",
+  "episode_count": 25,
+  "episode_length": 25,
+  "cover_image": "https://static.hummingbird.me/anime/poster_images/000/007/622/large/b0012149_5229cf3c7f4ee.jpg?1408461927",
+  "synopsis": "The story begins when 30,000 Japanese gamers are trapped in the fantasy online game world Elder Tale...)",
+  "show_type": "TV",
+  "started_airing": "2013-10-05",
+  "finished_airing": "2014-03-22",
+  "community_rating": 4.16741419054807,
+  "age_rating": "PG13",
+  "genres": [
+    { "name": "Action" },
+    { "name": "Adventure" },
+    { "name": "Magic" },
+    { "name": "Fantasy" },
+    { "name": "Game" }
+  ]
+}
+*/
+function parse(response){
+    // Response is already an array of JSON/JS objects
+    // Check for null objects in it
+    if(response.length <= 0){
+        return "Sorry no results found";
+    }
+    
+    // Selective string creation from JSON attributes
+    var final = "Search Results";
+    for (var i = 0; i < response.length; i++) {
+  	final += "\n\t Title: ";
+    final += response[i].title;
+  
+    final += "\n\t URL: ";
+    final += response[i].url;
+
+    final += "\n\t Episodes: ";
+    final += response[i].episode_count;
+
+    final += "\n\t Synopsis: ";
+    final += response[i].synopsis;
+
+    final += "\n\t Type: ";
+    final += response[i].show_type;
+
+    final += "\n\t Rating (0-10): ";
+    final += new Number(response[i].community_rating * 2).toFixed(2);
+
+    final += "\n\t Genres: ";
+    for(var j = 0; j < response[i].genres.length; j++){
+    	final += response[i].genres[j].name + "; ";
+    }
+
+    final += "\n";
+  }
+  return final;
 }
 
 /**
