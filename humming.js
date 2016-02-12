@@ -100,8 +100,8 @@ function parse(res){
   	final += "\n\t Title: ";
     final += response[i].title;
   
-    final += "\n\t URL: ";
-    final += response[i].url;
+    /* final += "\n\t URL: ";
+    final += response[i].url; */
 
     final += "\n\t Episodes: ";
     final += response[i].episode_count;
