@@ -97,7 +97,7 @@ function parse(res){
     
     // Selective string creation from JSON attributes
     for (var i = 0; i < limit; i++) {
-    final += "\n------[" + (i + 1) + "]";
+    final += "\n\n------[" + (i + 1) + "]";
     
   	final += "\nTitle: ";
     final += response[i].title;
