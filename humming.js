@@ -44,7 +44,7 @@ exports.run = function(api, event) {
 
 function parse(query){
     // testing
-    console.debug(JSON.stringify(query));
+    console.debug(JSON.stringify(query, ['url', 'title', 'episode_count', 'synopsis', 'show_type', 'genres'], '\t'));
     return JSON.stringify(query, ['url', 'title', 'episode_count', 'synopsis', 'show_type', 'genres'], '\t');
     // return 'parser reached';
 }
