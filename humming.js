@@ -41,6 +41,7 @@ exports.run = function(api, event) {
             // Callback calls the parser if no errors were registered
             if(!error){
                 api.sendMessage(parse(response), event.thread_id);
+                console.debug('line 44');
             } else{
                 console.debug(error);
             }
@@ -49,6 +50,8 @@ exports.run = function(api, event) {
 
 function parse(query){
     // testing
+    console.debug('line 53');
+    console.debug(JSON.stringify(query));
     return JSON.stringify(query);
     // return 'parser reached';
 }
@@ -72,9 +75,11 @@ function search(query, callback) {
         
         if(err) {
             if(res) {
+                console.debug('line 77');
                 callback("Request error: " + err + ", " + res.statusCode, body);
             }
             else {
+                console.debug('line 81');
                 callback("Connection error: not connected to internet", body);
             }
         }
