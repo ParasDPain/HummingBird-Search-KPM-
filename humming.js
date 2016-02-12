@@ -89,9 +89,12 @@ function parse(response){
         return "Sorry no results found";
     }
     
-    // Selective string creation from JSON attributes
+    // Result limit set-up; Use the lowest of the two as the limit
+    var limit = RESULT_LIMIT < response.length? RESULT_LIMIT : response.length;
     var final = "Search Results";
-    for (var i = 0; i < response.length; i++) {
+    
+    // Selective string creation from JSON attributes
+    for (var i = 0; i < limit; i++) {
   	final += "\n\t Title: ";
     final += response[i].title;
   
