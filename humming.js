@@ -94,34 +94,33 @@ function parse(res){
     // Result limit set-up; Use the lowest of the two as the limit
     var limit = RESULT_LIMIT <= response.length? RESULT_LIMIT : response.length;
     var final = "---Search Results---";
-    final += "\n"
     
     // Selective string creation from JSON attributes
     for (var i = 0; i < limit; i++) {
-  	final += "\n Title: ";
+    final += "\n------[" + (i + 1) + "]";
+    
+  	final += "\nTitle: ";
     final += response[i].title;
   
     /* final += "\n\t URL: ";
     final += response[i].url; */
 
-    final += "\n Episodes: ";
+    final += "\nEpisodes: ";
     final += response[i].episode_count;
 
-    final += "\n Synopsis: ";
+    final += "\nSynopsis: ";
     final += response[i].synopsis;
 
-    final += "\n Type: ";
+    final += "\nType: ";
     final += response[i].show_type;
 
-    final += "\n Rating (0-10): ";
+    final += "\nRating (0-10): ";
     final += new Number(response[i].community_rating * 2).toFixed(2);
 
-    final += "\n Genres: ";
+    final += "\nGenres: ";
     for(var j in response[i].genres){
-    	final += j + "; ";
+    	final += j.name.toString() + "; ";
     }
-
-    final += "\n";
   }
   return final;
 }
