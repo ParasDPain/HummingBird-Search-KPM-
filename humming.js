@@ -51,7 +51,6 @@ exports.run = function(api, event) {
         search(query, function(error, response){
             // Callback calls the parser if no errors were registered
             if(!error){
-                console.debug(parse(response));
                 api.sendMessage(parse(response), event.thread_id);
             } else{
                 console.debug(error);
@@ -112,7 +111,7 @@ function parse(res){
     final += response[i].episode_count;
 
     final += "\nSynopsis: ";
-    final += response[i].synopsis;
+    final += response[i].synopsis; // Remove new lines to sustain output format
 
     final += "\nType: ";
     final += response[i].show_type;
