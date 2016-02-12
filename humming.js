@@ -97,7 +97,7 @@ function parse(res){
     
     // Selective string creation from JSON attributes
     for (var i = 0; i < limit; i++) {
-    final += "\n ------[" + i + "]";
+    final += "\n------[" + (i + 1) + "]";
     
   	final += "\nTitle: ";
     final += response[i].title;
@@ -118,8 +118,9 @@ function parse(res){
     final += new Number(response[i].community_rating * 2).toFixed(2);
 
     final += "\nGenres: ";
-    for(var j in response[i].genres){
-    	final += JSON.parse(j.name) + "; ";
+    var gen = JSON.parse(response[i].genres);
+    for(var j = 0; j < gen.length; j++){
+    	final += gen[j].name + "; ";
     }
   }
   return final;
