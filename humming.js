@@ -118,7 +118,7 @@ function parse(res){
     final += new Number(response[i].community_rating * 2).toFixed(2);
 
     final += "\nGenres: ";
-    var gen = JSON.parse(response[i].genres);
+    var gen = response[i].genres;
     for(var j = 0; j < gen.length; j++){
     	final += gen[j].name + "; ";
     }
