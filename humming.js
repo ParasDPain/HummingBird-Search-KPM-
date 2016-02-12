@@ -114,9 +114,9 @@ function parse(response){
     final += new Number(response[i].community_rating * 2).toFixed(2);
 
     final += "\n\t Genres: ";
-    for(var j = 0; j < response[i].genres.length; j++){
+    /* for(var j = 0; j < response[i].genres.length; j++){
     	final += response[i].genres[j].name + "; ";
-    }
+    } */
 
     final += "\n";
   }
