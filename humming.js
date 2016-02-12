@@ -119,7 +119,7 @@ function parse(res){
 
     final += "\nGenres: ";
     for(var j in response[i].genres){
-    	final += j.name.toString() + "; ";
+    	final += JSON.parse(j.name) + "; ";
     }
   }
   return final;
