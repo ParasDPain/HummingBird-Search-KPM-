@@ -6,7 +6,6 @@
  * Date Written: 10/02/2016
  */
 
-console.debug('line 10');
 var request = require.safe('request');
 
 /*
@@ -16,8 +15,6 @@ var HUMMINGBIRD_HOST = "hummingbird.me/api/v1";
 var HUMMINGBIRD_SEARCH = "/search/anime/";
 
 exports.match = function(text, commandPrefix) {
-    // The space makes sure the command is exact and not a mere prefix
-    console.debug('line 23');
     return text.startsWith(commandPrefix + 'humming');
 };
 
@@ -35,13 +32,10 @@ exports.help = function(commandPrefix) {
 exports.run = function(api, event) {
         var query = event.body.substr(8);
         
-        console.debug('line 40');
-        
         search(query, function(error, response){
             // Callback calls the parser if no errors were registered
             if(!error){
                 api.sendMessage(parse(response), event.thread_id);
-                console.debug('line 44');
             } else{
                 console.debug(error);
             }
@@ -50,9 +44,8 @@ exports.run = function(api, event) {
 
 function parse(query){
     // testing
-    console.debug('line 53');
     console.debug(JSON.stringify(query));
-    return JSON.stringify(query);
+    return JSON.stringify(query, ['url', 'title', 'episode_count', 'synopsis', 'show_type', 'genres'], '\t');
     // return 'parser reached';
 }
 
@@ -71,15 +64,11 @@ function search(query, callback) {
              }
     }, function(err, res, body) {
         
-        console.debug('line 73');
-        
         if(err) {
             if(res) {
-                console.debug('line 77');
                 callback("Request error: " + err + ", " + res.statusCode, body);
             }
             else {
-                console.debug('line 81');
                 callback("Connection error: not connected to internet", body);
             }
         }
