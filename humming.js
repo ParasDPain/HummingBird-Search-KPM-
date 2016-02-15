@@ -20,7 +20,7 @@ var RESULT_LIMIT = 3; // Default
 
 exports.match = function (text, commandPrefix) {
     // TODO Implement https://github.com/mrkno/Kassy/issues/82#issuecomment-184053364
-    return text.startsWith(commandPrefix + "humming " || commandPrefix + "humming " + commandPrefix + "limit ");
+    return text.startsWith(commandPrefix + "humming" || commandPrefix + "humming " + commandPrefix + "limit ");
 };
 
 /*
@@ -49,7 +49,7 @@ exports.run = function (api, event) {
         RESULT_LIMIT = command.substr(0, command.indexOf(" "));
         
         // start reading from where the whitespace occurs
-        query = command.substr(command.indexOf(" ") + 1);
+        query = command.replace(RESULT_LIMIT + " ", "");
         console.debug(query + " " + query.length);
     } else {
         // Just start reading after the keyword + " "
