@@ -54,7 +54,7 @@ exports.run = function (api, event) {
     } else {
         // Just start reading after the keyword + " "
         console.debug(command + " " + command.length);
-        query = command.replace(commandPrefix + "humming ", "");
+        query = command.replace(commandPrefix + "humming", "");
         console.debug(query + " " + query.length);
     }
     
