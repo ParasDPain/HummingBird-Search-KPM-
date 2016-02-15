@@ -41,21 +41,25 @@ exports.run = function (api, event) {
         query;
 
     if (command.startsWith(commandPrefix + "humming " + commandPrefix + "limit ")) {
-        console.debug(command + " " + command.length);
+        console.debug(command + " " + command.length); //////////////////////////////////
         // remove command keywords from the string and assign variables
-        command = command.replace(commandPrefix + "humming " + commandPrefix + "limit ", "");
-        console.debug(command + " " + command.length);
+        command = command.replace(commandPrefix + "humming " + commandPrefix + "limit", "");
+        console.debug(command + " " + command.length); //////////////////////////////////
+        command = command.trim(); // remove trailing whitespaces
+        console.debug(command + " " + command.length); //////////////////////////////////
         // substr length is exclusive
         RESULT_LIMIT = command.substr(0, command.indexOf(" "));
         
         // start reading from where the whitespace occurs
         query = command.replace(RESULT_LIMIT + " ", "");
-        console.debug(query + " " + query.length);
+        console.debug(query + " " + query.length); //////////////////////////////////
     } else {
         // Just start reading after the keyword + " "
         console.debug(command + " " + command.length);
         query = command.replace(commandPrefix + "humming", "");
-        console.debug(query + " " + query.length);
+        console.debug(query + " " + query.length); //////////////////////////////////
+        query = query.trim(); // remove trailing whitespaces
+        console.debug(query + " " + query.length); //////////////////////////////////
     }
     
     console.debug(query + " " + query.length);
