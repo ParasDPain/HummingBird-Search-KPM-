@@ -41,20 +41,26 @@ exports.run = function (api, event) {
         query;
 
     if (command.startsWith(commandPrefix + "humming " + commandPrefix + "limit ")) {
+        console.debug(command + " " + command.length);
         // remove command keywords from the string and assign variables
         command = command.replace(commandPrefix + "humming " + commandPrefix + "limit ", "");
-        
+        console.debug(command + " " + command.length);
         // substr length is exclusive
         RESULT_LIMIT = command.substr(0, command.indexOf(" "));
         
         // start reading from where the whitespace occurs
         query = command.substr(command.indexOf(" "));
+        console.debug(query + " " + query.length);
     } else {
         // Just start reading after the keyword + " "
+        console.debug(command + " " + command.length);
         query = command.replace(commandPrefix + "humming ", "");
+        console.debug(query + " " + query.length);
     }
+    
+    console.debug(query + " " + query.length);
 
-    if (validQuery(query, api)) {
+    if (query.length > 0) {
         search(query, function (error, response) {
             // Callback calls the parser if no errors were registered
             if (error == null) {
@@ -63,21 +69,13 @@ exports.run = function (api, event) {
                 console.debug(error);
             }
         });
+    } else{
+        api.sendMessage("And just what am I supposed to do with that?", event.thread_id);
     }
 
     RESULT_LIMIT = 3; // Reset to default
 
 };
-
-// Checks for null queries
-function validQuery(input, api) {
-    console.debug(input + " " + input.length);
-    if (input.length == 0) {
-        api.sendMessage("And just what am I supposed to do with that?", event.thread_id);
-        return false;
-    }
-    return true;
-}
 
 /* Each JSON object in the returned will be of this form
 {
