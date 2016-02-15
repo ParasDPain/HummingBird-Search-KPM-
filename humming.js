@@ -53,6 +53,7 @@ exports.run = function (api, event) {
             command = command + " "; 
             // s.substr() : length is exclusive
             RESULT_LIMIT = command.substr(0, command.indexOf(" "));
+            console.debug("result init to: " + RESULT_LIMIT);
         
             // start reading from where the whitespace occurs
             query = command.replace(RESULT_LIMIT, "");
@@ -121,6 +122,7 @@ function parse(res) {
     }
     
     // Result limit set-up; Use the lowest of the two as the limit
+    console.debug("result: " + RESULT_LIMIT + ", res: " + response.length);
     var limit = RESULT_LIMIT <= response.length ? RESULT_LIMIT : response.length;
     var final = "---Search Results---";
     
