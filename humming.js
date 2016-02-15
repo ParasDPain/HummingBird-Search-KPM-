@@ -47,10 +47,10 @@ exports.run = function (api, event) {
         // substr length is exclusive
         RESULT_LIMIT = command.substr(0, command.indexOf(" "));
         
-        // start reading from where the whitespace occured
-        query = event.body.substr(command.indexOf(" "));
+        // start reading from where the whitespace occurs
+        query = command.substr(command.indexOf(" "));
     } else {
-        // Check again 
+        // Just start reading after the keyword + " "
         query = command.replace(commandPrefix + "humming ", "");
     }
 
@@ -64,11 +64,14 @@ exports.run = function (api, event) {
             }
         });
     }
-    
+
+    RESULT_LIMIT = 3; // Reset to default
+
 };
 
 // Checks for null queries
 function validQuery(input, api) {
+    console.debug(input + " " + input.length);
     if (input.length == 0) {
         api.sendMessage("And just what am I supposed to do with that?", event.thread_id);
         return false;
