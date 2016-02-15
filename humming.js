@@ -40,7 +40,7 @@ exports.run = function (api, event) {
         commandPrefix = api.commandPrefix,
         query;
 
-    if (command.startsWith(commandPrefix + "humming " + commandPrefix + "limit ")) {
+    if (command.startsWith(commandPrefix + "humming " + commandPrefix + "limit")) {
         // remove command keywords from the string and assign variables
         command = command.replace(commandPrefix + "humming " + commandPrefix + "limit", "");
 
