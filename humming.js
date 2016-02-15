@@ -49,7 +49,7 @@ exports.run = function (api, event) {
         RESULT_LIMIT = command.substr(0, command.indexOf(" "));
         
         // start reading from where the whitespace occurs
-        query = command.substr(command.indexOf(" "));
+        query = command.substr(command.indexOf(" ") + 1);
         console.debug(query + " " + query.length);
     } else {
         // Just start reading after the keyword + " "
