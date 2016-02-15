@@ -16,10 +16,10 @@ var request = require.safe("request");
 */
 var HUMMINGBIRD_HOST = "hummingbird.me/api/v1";
 var HUMMINGBIRD_SEARCH = "/search/anime/";
-var RESULT_LIMIT = 3;
+var RESULT_LIMIT = 3; // Default
 
 exports.match = function(text, commandPrefix) {
-    return text.startsWith(commandPrefix + "humming " || commandPrefix + "humming /limit ");
+    return text.startsWith(commandPrefix + "humming " || commandPrefix + "humming " + commandPrefix + "limit ");
 };
 
 /*
@@ -27,7 +27,7 @@ exports.match = function(text, commandPrefix) {
 */
 exports.help = function(commandPrefix) {
     return [[commandPrefix + "humming <query>","Searches Anime or Manga when you are too lazy to make a few clicks"],
-            [commandPrefix +  "humming /limit <number of results> <query>", "Searches for the query and returns the desired number of results"]];
+            [commandPrefix +  "humming " + commandPrefix + "limit <number of results> <query>", "Searches for the query and returns the desired number of results"]];
 };
 
 /*
@@ -43,14 +43,14 @@ exports.run = function(api, event) {
         query = event.body.substr(8);
     } else{
         // remove command keyword and assign values
-        command =  command.replace("humming /limit ", "");
+        command =  command.replace(commandPrefix + "humming " + commandPrefix + "limit ", "");
         RESULT_LIMIT = command.substr(0, command.indexOf(" ")); // substr length is exclusive
         query = event.body.substr(command.indexOf(" ")); // start reading from where the whitespace occured
     }
         
         search(query, function(error, response){
             // Callback calls the parser if no errors were registered
-            if(!error){
+            if(error.length < 0){
                 api.sendMessage(parse(response), event.thread_id);
             } else{
                 console.debug(error);
