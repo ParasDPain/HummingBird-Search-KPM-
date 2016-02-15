@@ -50,7 +50,7 @@ exports.run = function(api, event) {
         
         search(query, function(error, response){
             // Callback calls the parser if no errors were registered
-            if(error.length < 0){
+            if(error !== null){
                 api.sendMessage(parse(response), event.thread_id);
             } else{
                 console.debug(error);
