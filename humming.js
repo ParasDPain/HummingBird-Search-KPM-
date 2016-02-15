@@ -37,9 +37,9 @@ exports.help = function (commandPrefix) {
 */
 exports.run = function (api, event) {
     // All message texts come in trimmed
-    var command = event.body,
-        commandPrefix = api.commandPrefix,
-        query;
+    var command = event.body;
+    var commandPrefix = api.commandPrefix;
+    var query;
 
     if (command.startsWith(commandPrefix + "humming " + commandPrefix + "limit")) {
         // remove command keywords from the string and assign variables
@@ -82,7 +82,7 @@ exports.run = function (api, event) {
         api.sendMessage("And just what am I supposed to do with that?", event.thread_id);
     }
 
-    RESULT_LIMIT = 3; // Reset to default
+    // RESULT_LIMIT = 3; // Reset to default
 
 };
 
