@@ -36,6 +36,7 @@ exports.help = function (commandPrefix) {
 	above returns true.
 */
 exports.run = function (api, event) {
+    // All message texts come in trimmed
     var command = event.body,
         commandPrefix = api.commandPrefix,
         query;
@@ -56,7 +57,7 @@ exports.run = function (api, event) {
             // start reading from where the whitespace occurs
             query = command.replace(RESULT_LIMIT, "");
             query = query.trim(); // remove trailing whitespaces
-        } else{
+        } else {
             query = command; // Will be null
         }
 
@@ -66,11 +67,10 @@ exports.run = function (api, event) {
         query = query.trim(); // remove trailing whitespaces
     }
 
-    console.debug(query + " " + query.length);
-
     if (query.length > 0) {
         search(query, function (error, response) {
             // Callback calls the parser if no errors were registered
+            // Only proceed if no errors were registered
             if (error == null) {
                 api.sendMessage(parse(response), event.thread_id);
             } else {
