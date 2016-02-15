@@ -95,6 +95,7 @@ function parse(res){
     
     // Result limit set-up; Use the lowest of the two as the limit
     var limit = RESULT_LIMIT <= response.length? RESULT_LIMIT : response.length;
+    console.debug("RESULT_LIMIT: " + RESULT_LIMIT + ", response.length: " + response.length);
     var final = "---Search Results---";
     
     // Selective string creation from JSON attributes
@@ -111,7 +112,7 @@ function parse(res){
     final += response[i].episode_count;
 
     final += "\nSynopsis: ";
-    final += response[i].synopsis; // Remove new lines to sustain output format
+    final += response[i].synopsis.replace(/\r?\n|\r/g,""); // Remove new lines to sustain output format
 
     final += "\nType: ";
     final += response[i].show_type;
