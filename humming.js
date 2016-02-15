@@ -18,45 +18,63 @@ var HUMMINGBIRD_HOST = "hummingbird.me/api/v1";
 var HUMMINGBIRD_SEARCH = "/search/anime/";
 var RESULT_LIMIT = 3; // Default
 
-exports.match = function(text, commandPrefix) {
+exports.match = function (text, commandPrefix) {
+    // TODO Implement https://github.com/mrkno/Kassy/issues/82#issuecomment-184053364
     return text.startsWith(commandPrefix + "humming " || commandPrefix + "humming " + commandPrefix + "limit ");
 };
 
 /*
 	Method that provides help strings for use with this module.
 */
-exports.help = function(commandPrefix) {
-    return [[commandPrefix + "humming <query>","Searches Anime or Manga when you are too lazy to make a few clicks"],
-            [commandPrefix +  "humming " + commandPrefix + "limit <number of results> <query>", "Searches for the query and returns the desired number of results"]];
+exports.help = function (commandPrefix) {
+    return [[commandPrefix + "humming <query>", "Searches Anime or Manga when you are too lazy to make a few clicks"],
+        [commandPrefix + "humming " + commandPrefix + "limit <number of results> <query>", "Searches for the query and returns the desired number of results"]];
 };
 
 /*
 	The main entry point of the module. This will be called by Kassy whenever the match function
 	above returns true.
 */
-exports.run = function(api, event) {
+exports.run = function (api, event) {
     var command = event.body,
         commandPrefix = api.commandPrefix,
         query;
+
+    if (command.startsWith(commandPrefix + "humming " + commandPrefix + "limit ")) {
+        // remove command keywords from the string and assign variables
+        command = command.replace(commandPrefix + "humming " + commandPrefix + "limit ", "");
         
-    if(command.startsWith(commandPrefix + "humming ")){
-        query = event.body.substr(8);
-    } else{
-        // remove command keyword and assign values
-        command =  command.replace(commandPrefix + "humming " + commandPrefix + "limit ", "");
-        RESULT_LIMIT = command.substr(0, command.indexOf(" ")); // substr length is exclusive
-        query = event.body.substr(command.indexOf(" ")); // start reading from where the whitespace occured
+        // substr length is exclusive
+        RESULT_LIMIT = command.substr(0, command.indexOf(" "));
+        
+        // start reading from where the whitespace occured
+        query = event.body.substr(command.indexOf(" "));
+    } else {
+        // Check again 
+        query = command.replace(commandPrefix + "humming ", "");
     }
-        
-        search(query, function(error, response){
+
+    if (validQuery(query, api)) {
+        search(query, function (error, response) {
             // Callback calls the parser if no errors were registered
-            if(error == null){
+            if (error == null) {
                 api.sendMessage(parse(response), event.thread_id);
-            } else{
+            } else {
                 console.debug(error);
             }
         });
+    }
+    
 };
+
+// Checks for null queries
+function validQuery(input, api) {
+    if (input.length == 0) {
+        api.sendMessage("And just what am I supposed to do with that?", event.thread_id);
+        return false;
+    }
+    return true;
+}
 
 /* Each JSON object in the returned will be of this form
 {
@@ -85,48 +103,47 @@ exports.run = function(api, event) {
   ]
 }
 */
-function parse(res){
+function parse(res) {
     var response = JSON.parse(res);
     // Response is already an array of JSON/JS objects
     // Check for null objects in it
-    if(response.length <= 0){
+    if (response.length <= 0) {
         return "Sorry no results found";
     }
     
     // Result limit set-up; Use the lowest of the two as the limit
-    var limit = RESULT_LIMIT <= response.length? RESULT_LIMIT : response.length;
-    console.debug("RESULT_LIMIT: " + RESULT_LIMIT + ", response.length: " + response.length);
+    var limit = RESULT_LIMIT <= response.length ? RESULT_LIMIT : response.length;
     var final = "---Search Results---";
     
     // Selective string creation from JSON attributes
     for (var i = 0; i < limit; i++) {
-    final += "\n\n------[" + (i + 1) + "]";
-    
-  	final += "\nTitle: ";
-    final += response[i].title;
+        final += "\n\n------[" + (i + 1) + "]";
+
+        final += "\nTitle: ";
+        final += response[i].title;
   
-    /* final += "\n\t URL: ";
-    final += response[i].url; */
+        /* final += "\n\t URL: ";
+        final += response[i].url; */
 
-    final += "\nEpisodes: ";
-    final += response[i].episode_count;
+        final += "\nEpisodes: ";
+        final += response[i].episode_count;
 
-    final += "\nSynopsis: ";
-    final += response[i].synopsis.replace(/\r?\n|\r/g,""); // Remove new lines to sustain output format
+        final += "\nSynopsis: ";
+        final += response[i].synopsis.replace(/\r?\n|\r/g, ""); // Remove new lines to sustain output format
 
-    final += "\nType: ";
-    final += response[i].show_type;
+        final += "\nType: ";
+        final += response[i].show_type;
 
-    final += "\nRating (0-10): ";
-    final += new Number(response[i].community_rating * 2).toFixed(2);
+        final += "\nRating (0-10): ";
+        final += new Number(response[i].community_rating * 2).toFixed(2);
 
-    final += "\nGenres: ";
-    var gen = response[i].genres;
-    for(var j = 0; j < gen.length; j++){
-    	final += gen[j].name + "; ";
+        final += "\nGenres: ";
+        var gen = response[i].genres;
+        for (var j = 0; j < gen.length; j++) {
+            final += gen[j].name + "; ";
+        }
     }
-  }
-  return final;
+    return final;
 }
 
 /**
@@ -137,15 +154,15 @@ function parse(res){
  */
 function search(query, callback) {
     request.get({
-        url: "https://" + HUMMINGBIRD_HOST + 
-             HUMMINGBIRD_SEARCH + "?query=" + query,
+        url: "https://" + HUMMINGBIRD_HOST +
+        HUMMINGBIRD_SEARCH + "?query=" + query,
         headers: {
-                 "Content-Type": "application/x-www-form-urlencoded"
-             }
-    }, function(err, res, body) {
-        
-        if(err) {
-            if(res) {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+    }, function (err, res, body) {
+
+        if (err) {
+            if (res) {
                 callback("Request error: " + err + ", " + res.statusCode, body);
             }
             else {
