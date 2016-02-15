@@ -45,15 +45,21 @@ exports.run = function (api, event) {
         command = command.replace(commandPrefix + "humming " + commandPrefix + "limit", "");
 
         command = command.trim(); // remove trailing whitespaces
-
-        // To make the next line work properly
-        command = command + " "; 
-        // s.substr() : length is exclusive
-        RESULT_LIMIT = command.substr(0, command.indexOf(" "));
         
-        // start reading from where the whitespace occurs
-        query = command.replace(RESULT_LIMIT, "");
-        query = query.trim(); // remove trailing whitespaces
+        // Only assign the limit value if one exists
+        if (command.length > 0) {
+            // To make the next line work properly
+            command = command + " "; 
+            // s.substr() : length is exclusive
+            RESULT_LIMIT = command.substr(0, command.indexOf(" "));
+        
+            // start reading from where the whitespace occurs
+            query = command.replace(RESULT_LIMIT, "");
+            query = query.trim(); // remove trailing whitespaces
+        } else{
+            query = command; // Will be null
+        }
+
     } else {
         // Just start reading after the keyword + " "
         query = command.replace(commandPrefix + "humming", "");
