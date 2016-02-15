@@ -82,6 +82,7 @@ exports.run = function (api, event) {
         api.sendMessage("And just what am I supposed to do with that?", event.thread_id);
     }
 
+// TODO The compiler processes this line before the actual API call, dunno why
     // RESULT_LIMIT = 3; // Reset to default
 
 };
