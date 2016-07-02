@@ -14,12 +14,10 @@ var request = require("request");
 // HummingBird API Paths
 var HUMMINGBIRD_HOST = "hummingbird.me/api/v1";
 var HUMMINGBIRD_SEARCH = "/search/anime/";
-var RESULT_LIMIT;
 
 exports.load = function () {
-    RESULT_LIMIT = exports.platform.config.getConfig('humming');
-    if(!RESULT_LIMIT) {
-        RESULT_LIMIT = 3; // Default to 3 if no saved values were found
+    if(!exports.config.limit) {
+        exports.config.limit = 3; // Default to 3 if no saved values were found
     }
 };
 
@@ -39,7 +37,7 @@ exports.run = function (api, event) {
         // length 4 to include /humming /limit <someValue> <query>
         if(args.length >= 4) {
             var parseResult = Math.round(event.arguments[2]);
-            RESULT_LIMIT = parseResult != NaN ? 3 : parseResult;
+            exports.config.limit = isNaN(parseResult) ? 3 : parseResult;
             query = args[3];
         } else {
             api.sendMessage("And just what am I supposed to do with that?", event.thread_id);
@@ -94,7 +92,7 @@ function parse(res) {
     }
 
     // Result limit set-up; Use the lowest of the two as the limit
-    var limit = RESULT_LIMIT <= response.length ? RESULT_LIMIT : response.length;
+    var limit = exports.config.limit <= response.length ? exports.config.limit : response.length;
     var final = "---Search Results---";
 
     // Selective string creation from JSON attributes
