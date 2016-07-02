@@ -16,6 +16,8 @@ var HUMMINGBIRD_HOST = "hummingbird.me/api/v1";
 var HUMMINGBIRD_SEARCH = "/search/anime/";
 var RESULT_LIMIT = 3; // Default
 
+// TODO store search limit in config
+
 exports.run = function (api, event) {
     var args = event.arguments;
     var query;
