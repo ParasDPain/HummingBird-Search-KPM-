@@ -20,13 +20,14 @@ var RESULT_LIMIT = 3; // Default
 
 exports.run = function (api, event) {
     var args = event.arguments;
-    var query;
 
     // Check for empty queries
     if(args.length < 2) {
         api.sendMessage("Use " + api.commandPrefix + "help humming to learn proper usage, or should I order 'Typing for Dummies'?", event.thread_id);
         return; // and exit
     }
+
+    var query = args[1]; // Default to simple usage
 
     // Check for /limit command
     if(args[1] === api.commandPrefix + "limit") {
@@ -41,6 +42,7 @@ exports.run = function (api, event) {
         }
     }
 
+    console.debug("Query: " + query);
     search(query, function (error, response) {
         // Callback calls the parser if no errors were registered
         // Only proceed if no errors were registered
