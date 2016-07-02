@@ -14,9 +14,14 @@ var request = require("request");
 // HummingBird API Paths
 var HUMMINGBIRD_HOST = "hummingbird.me/api/v1";
 var HUMMINGBIRD_SEARCH = "/search/anime/";
-var RESULT_LIMIT = 3; // Default
+var RESULT_LIMIT;
 
-// TODO store search limit in config
+exports.load = function () {
+    RESULT_LIMIT = exports.platform.config.getConfig('humming');
+    if(!RESULT_LIMIT) {
+        RESULT_LIMIT = 3; // Default to 3 if no saved values were found
+    }
+};
 
 exports.run = function (api, event) {
     var args = event.arguments;
@@ -42,7 +47,6 @@ exports.run = function (api, event) {
         }
     }
 
-    console.debug("Query: " + query);
     search(query, function (error, response) {
         // Callback calls the parser if no errors were registered
         // Only proceed if no errors were registered
@@ -90,7 +94,6 @@ function parse(res) {
     }
 
     // Result limit set-up; Use the lowest of the two as the limit
-    console.debug("result: " + RESULT_LIMIT + ", res: " + response.length);
     var limit = RESULT_LIMIT <= response.length ? RESULT_LIMIT : response.length;
     var final = "---Search Results---";
 
