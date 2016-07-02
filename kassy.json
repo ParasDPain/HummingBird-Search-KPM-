@@ -1,5 +1,10 @@
 {
   "name": "humming",
-  "version": 2.0,
-  "startup": "humming.js"
+  "version": 2.1,
+  "startup": "humming.js",
+  "command": "humming",
+  "help": [
+      ["{{commandPrefix}}humming <query>", "Searches Anime or Manga when you are too lazy to make a few clicks"],
+      ["{{commandPrefix}}humming {{commandPrefix}}limit <number of results> <query>", "Searches for the query and returns the desired number of results"]
+  ]
 }

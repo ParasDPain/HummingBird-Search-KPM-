@@ -4,90 +4,53 @@
  *
  * Written By: Paras D. Pain
  * Date Written: 10/02/2016
- * 
+ *
  * Many thanks to Matthew Knox and Awarua- for the immense advice on my first JS project
  * Many thanks to JSFiddle for making debugging a piece of cake :) Ooooh cake... > o >
  */
 
-var request = require.safe("request");
+var request = require("request");
 
-/*
-* Paths
-*/
+// HummingBird API Paths
 var HUMMINGBIRD_HOST = "hummingbird.me/api/v1";
 var HUMMINGBIRD_SEARCH = "/search/anime/";
 var RESULT_LIMIT = 3; // Default
 
-exports.match = function (text, commandPrefix) {
-    // TODO Implement https://github.com/mrkno/Kassy/issues/82#issuecomment-184053364
-    return text.startsWith(commandPrefix + "humming" || commandPrefix + "humming " + commandPrefix + "limit ");
-};
-
-/*
-	Method that provides help strings for use with this module.
-*/
-exports.help = function (commandPrefix) {
-    return [[commandPrefix + "humming <query>", "Searches Anime or Manga when you are too lazy to make a few clicks"],
-        [commandPrefix + "humming " + commandPrefix + "limit <number of results> <query>", "Searches for the query and returns the desired number of results"]];
-};
-
-/*
-	The main entry point of the module. This will be called by Kassy whenever the match function
-	above returns true.
-*/
 exports.run = function (api, event) {
-    // All message texts come in trimmed
-    var command = event.body;
-    var commandPrefix = api.commandPrefix;
+    var args = event.arguments;
     var query;
 
-    if (command.startsWith(commandPrefix + "humming " + commandPrefix + "limit")) {
-        // remove command keywords from the string and assign variables
-        command = command.replace(commandPrefix + "humming " + commandPrefix + "limit", "");
+    // Check for empty queries
+    if(args.length < 2) {
+        api.sendMessage("Use " + api.commandPrefix + "help humming to learn proper usage, or should I order 'Typing for Dummies'?", event.thread_id);
+        return; // and exit
+    }
 
-        command = command.trim(); // remove trailing whitespaces
-        
-        // Only assign the limit value if one exists
-        if (command.length > 0) {
-            // To make the next line work properly
-            command = command + " "; 
-            // s.substr() : length is exclusive
-            RESULT_LIMIT = command.substr(0, command.indexOf(" "));
-            console.debug("result init to: " + RESULT_LIMIT);
-        
-            // start reading from where the whitespace occurs
-            query = command.replace(RESULT_LIMIT, "");
-            query = query.trim(); // remove trailing whitespaces
+    // Check for /limit command
+    if(args[1] === api.commandPrefix + "limit") {
+        // length 4 to include /humming /limit <someValue> <query>
+        if(args.length >= 4) {
+            var parseResult = Math.round(event.arguments[2]);
+            RESULT_LIMIT = parseResult != NaN ? 3 : parseResult;
+            query = args[3];
         } else {
-            query = command; // Will be null
+            api.sendMessage("And just what am I supposed to do with that?", event.thread_id);
+            return; // and exit
         }
-
-    } else {
-        // Just start reading after the keyword + " "
-        query = command.replace(commandPrefix + "humming", "");
-        query = query.trim(); // remove trailing whitespaces
     }
 
-    if (query.length > 0) {
-        search(query, function (error, response) {
-            // Callback calls the parser if no errors were registered
-            // Only proceed if no errors were registered
-            if (error == null) {
-                api.sendMessage(parse(response), event.thread_id);
-            } else {
-                console.debug(error);
-            }
-        });
-    } else {
-        api.sendMessage("And just what am I supposed to do with that?", event.thread_id);
-    }
-
-// TODO The compiler processes this line before the actual API call, dunno why
-    // RESULT_LIMIT = 3; // Reset to default
-
+    search(query, function (error, response) {
+        // Callback calls the parser if no errors were registered
+        // Only proceed if no errors were registered
+        if (error == null) {
+            api.sendMessage(parse(response), event.thread_id);
+        } else {
+            console.debug(error);
+        }
+    });
 };
 
-/* Each JSON object in the returned will be of this form
+/* Returned JSON format
 {
   "id": 7622,
   "mal_id": 17265,
@@ -121,19 +84,19 @@ function parse(res) {
     if (response.length <= 0) {
         return "Sorry no results found";
     }
-    
+
     // Result limit set-up; Use the lowest of the two as the limit
     console.debug("result: " + RESULT_LIMIT + ", res: " + response.length);
     var limit = RESULT_LIMIT <= response.length ? RESULT_LIMIT : response.length;
     var final = "---Search Results---";
-    
+
     // Selective string creation from JSON attributes
     for (var i = 0; i < limit; i++) {
         final += "\n\n------[" + (i + 1) + "]";
 
         final += "\nTitle: ";
         final += response[i].title;
-  
+
         /* final += "\n\t URL: ";
         final += response[i].url; */
 
